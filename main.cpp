@@ -42,12 +42,8 @@ int largestInCol(int **mat, int col, int rows) {
    }
 
 
-
-int main() {
- 
-
-
-  int i = 0;
+int option1() {
+int i = 0;
 int preference = 0;
   int AnzahlSchueler = 0;
   cout << "\n Bitte geben Sie ein wie viele Schüler in der Klasse sind. ";
@@ -209,4 +205,51 @@ if(Test.assignment[n][i] == 1) {
 	delete[] ungarianMatrix;
 
 	return 0;
+
+
+}
+
+
+
+int exit(){
+  return 0;
+}
+
+
+
+
+
+
+
+int main() {
+ 
+ int option = 0;
+
+ int manuell;
+
+
+ while(option == 0)
+ {
+cout << "Das Programm hat 2 Möglichkeiten " << endl;
+cout << "1. Manuelle Eingabe" << endl;
+cout << "2. Datei per Pfad einlesen" << endl;
+cout << "3. Programm Verlassen" << endl;
+cout << "Bitte treffen Sie eine Auswahl" << endl;
+cin >> option;
+} 
+
+switch(option)
+{
+ case 1: manuell = option1();
+ if(manuell == 0){
+cout <<"Zuordnung erfolgreich" << endl;
+cout <<"Möchten Sie wieder zurück zum Menü ?(0) Alternativ mit (3) das Programm Verlassen." << endl;
+cin >> option;
+ } 
+
+ case 3: exit();
+}
+
+
+  
 };
