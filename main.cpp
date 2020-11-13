@@ -2,6 +2,7 @@
 #include <string>
 #include <string>
 #include <vector>
+#include <fstream>
 #include "Schueler.h"
 #include "Hungarian.hpp"
 #include "Wuensche.h"
@@ -14,24 +15,22 @@ using namespace std;
 Hungarian::Result runMunkres(const Hungarian::Matrix& cost) {
   Hungarian::Result r = Hungarian::Solve(cost, Hungarian::MODE_MINIMIZE_COST);
 
-  cerr << "cost-matrix:";
-  Hungarian::PrintMatrix(r.cost);
+  /*cerr << "cost-matrix:";
+  Hungarian::PrintMatrix(r.cost);*/
 
   if (!r.success) {
     cerr << "Failed to find solution :(" << endl;
 
   }
 
-  cerr << "assignment:";
-  Hungarian::PrintMatrix(r.assignment);
+  /*cerr << "assignment:";
+  Hungarian::PrintMatrix(r.assignment);*/
 
   
   return r;
 }
 
 int largestInCol(int **mat, int col, int rows) {
-      
-
  int max_col_element = mat[0][col];
 
    for (int j = 1; j < rows; j++) {
@@ -183,7 +182,7 @@ const Hungarian::Matrix EXAMPLE1 = costMatrix ;
 
   Test = runMunkres(EXAMPLE1);
 
-   Hungarian::PrintMatrix(Test.assignment);
+   
 
 
    for (int i = 0; i < AnzahlSchueler; i++){
@@ -217,6 +216,70 @@ int exit(){
 }
 
 
+int option2(){
+
+vector<vector<int>> costMatrix;
+Hungarian::Result Solution;
+string ersteZeile;
+int anzahlschueler;
+int a, b, c;
+ifstream stream("wichteln1.txt");
+int buffer = 0;
+int rest = 4;
+ 
+
+/* Erste Zeile ermitteln, wo die Anzahl der Schüler steht */
+getline(stream, ersteZeile);
+anzahlschueler = stoi(ersteZeile); 
+/* Vector mit der Anzahl an Spalten und Zeilen(Entspricht die Anzahl an Schülern) initialisieren */
+costMatrix.resize(anzahlschueler, vector<int>(anzahlschueler, 0));
+
+    
+while (stream >> a >> b >> c)
+{
+/* cout << a << " " << b << " " << c << endl; 
+ Jede Zeile entspricht ein Geschenk und jede Spalte einen Schüler */
+    costMatrix[a - 1][buffer] = 1;
+    costMatrix[b - 1][buffer] = 2;
+    costMatrix[c - 1][buffer] = 3;
+    buffer++; 
+}
+
+
+/* restlichen Preferenzen setzen da 1,2,3 schon bekannt, wird direkt mit 4 begonnen */
+for (int i = 0; i < anzahlschueler; ++i)
+    {
+        for (int j = 0; j < anzahlschueler; ++j)
+        {
+           if (costMatrix[j][i] == 0)
+         {costMatrix[j][i] = rest;  
+         rest++;  
+         }    
+        }
+        rest = 4;
+    }
+
+
+  Solution = runMunkres(costMatrix);
+   
+
+   for (int i = 0; i < anzahlschueler; i++){
+      cout << "Schüler Nr. " << i + 1<< " bekommt das ";
+  for (int n = 0; n < anzahlschueler; n++){
+if(Solution.assignment[n][i] == 1) {
+ cout << "Geschenk Nr. " << n + 1<< endl;
+ }
+}
+        }
+  cerr << "--------------------" << endl; 
+
+
+
+
+  return 0;
+}
+
+
 
 
 
@@ -225,14 +288,14 @@ int exit(){
 int main() {
  
  int option = 0;
-
  int manuell;
+ int automatisch;
 
 
  while(option == 0)
  {
 cout << "Das Programm hat 2 Möglichkeiten " << endl;
-cout << "1. Manuelle Eingabe" << endl;
+cout << "1. Manuelle Eingabe mit Zuordnung nach der Hungarischen Methode(möglichst fair)" << endl;
 cout << "2. Datei per Pfad einlesen" << endl;
 cout << "3. Programm Verlassen" << endl;
 cout << "Bitte treffen Sie eine Auswahl" << endl;
@@ -248,6 +311,12 @@ cout <<"Möchten Sie wieder zurück zum Menü ?(0) Alternativ mit (3) das Progra
 cin >> option;
  } 
 
+case 2: automatisch = option2();
+if(automatisch == 0){
+cout <<"Zuordnung erfolgreich" << endl;
+cout <<"Möchten Sie wieder zurück zum Menü ?(0) Alternativ mit (3) das Programm Verlassen." << endl;
+cin >> option;
+ } 
  case 3: exit();
 }
 
